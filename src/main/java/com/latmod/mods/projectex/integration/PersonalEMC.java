@@ -23,6 +23,7 @@ import javax.annotation.Nullable;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.math.BigInteger;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -151,7 +152,7 @@ public class PersonalEMC
 			OfflineKnowledgeProvider knowledgeProvider = new OfflineKnowledgeProvider(event.player.getUniqueID());
 			OfflineKnowledgeProvider.copy(provider, knowledgeProvider);
 			OFFLINE_MAP.put(knowledgeProvider.playerId, knowledgeProvider);
-			EMC_MAP.removeLong(knowledgeProvider.playerId);
+			EMC_MAP.remove(knowledgeProvider.playerId);
 		}
 	}
 

@@ -1,0 +1,15 @@
+{
+  "forge_marker": 1,
+  "defaults": {
+    "textures": {
+      "particle": "projectex:blocks/advanced_alchemical_chest/chest"
+    },
+    "transform": "forge:default-block"
+  },
+  "variants": {
+    "normal": [{ "model": "projectex:dummy" }],
+    "inventory": [{ "model": "projectex:advanced_alchemical_chest/base_chest", "textures": {
+      "chest": "projectex:blocks/advanced_alchemical_chest/chest"
+    }}]
+  }
+}

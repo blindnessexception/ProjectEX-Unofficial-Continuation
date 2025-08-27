@@ -1,0 +1,29 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "group": "projectex:compact_sun",
+  "conditions": [
+    {
+      "type": "minecraft:item_exists",
+      "item": "projectex:compact_sun"
+    }
+  ],
+  "result": {
+    "item": "compact_sun"
+  },
+  "pattern": [
+    "FSF",
+    "SMS",
+    "FSF"
+  ],
+  "key": {
+    "F": {
+      "item": "final_star"
+    },
+    "S": {
+      "item": "final_star_shard"
+    },
+    "M": {
+      "item": "matter", "data": 8
+    }
+  }
+}

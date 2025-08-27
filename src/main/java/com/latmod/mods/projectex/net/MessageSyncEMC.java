@@ -10,6 +10,7 @@ import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 
 import javax.annotation.Nullable;
+import java.math.BigInteger;
 
 /**
  * @author LatvianModder
@@ -31,13 +32,13 @@ public class MessageSyncEMC implements IMessage
 	@Override
 	public void fromBytes(ByteBuf buf)
 	{
-		emc = buf.readLong();
+        emc = buf.readLong();
 	}
 
 	@Override
 	public void toBytes(ByteBuf buf)
 	{
-		buf.writeLong(emc);
+        buf.writeLong(emc);
 	}
 
 	public static class Handler implements IMessageHandler<MessageSyncEMC, IMessage>

@@ -2,18 +2,29 @@ package com.latmod.mods.projectex.client;
 
 import com.latmod.mods.projectex.ProjectEX;
 import com.latmod.mods.projectex.ProjectEXConfig;
+import com.latmod.mods.projectex.ProjectEXEventHandler;
+import com.latmod.mods.projectex.api.state.ProjectEXStateProps;
+import com.latmod.mods.projectex.block.EnumFuel;
 import com.latmod.mods.projectex.block.EnumMatter;
 import com.latmod.mods.projectex.block.EnumTier;
+import com.latmod.mods.projectex.block.ProjectEXBlocks;
+import com.latmod.mods.projectex.client.rendering.ChestRenderer;
 import com.latmod.mods.projectex.gui.EMCFormat;
 import com.latmod.mods.projectex.integration.PersonalEMC;
 import com.latmod.mods.projectex.item.ProjectEXItems;
+import com.latmod.mods.projectex.tile.TileAdvancedAlchemicalChest;
+import moze_intel.projecte.api.state.PEStateProps;
+import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
+import net.minecraft.client.renderer.block.statemap.StateMap;
+import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.Item;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.model.ModelLoader;
+import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
@@ -31,7 +42,7 @@ public class ProjectEXClientEventHandler
 	private static long emc;
 	private static long lastEMC;
 	private static int timer;
-	private static long[] emcsa = new long[5];
+	private static final long[] emcsa = new long[5];
 	public static long emcs = 0L;
 
 	private static void addModel(Item item, String variant)
@@ -42,12 +53,22 @@ public class ProjectEXClientEventHandler
 	@SubscribeEvent
 	public static void registerModels(ModelRegistryEvent event)
 	{
+        ModelLoader.setCustomStateMapper(ProjectEXBlocks.ADVANCED_ALCHEMICAL_CHEST, (new StateMap.Builder()).ignore(PEStateProps.FACING).build());
+
+        for (EnumDyeColor color : EnumDyeColor.values()) {
+            ModelLoader.setCustomModelResourceLocation(ProjectEXItems.ADVANCED_ALCHEMICAL_CHEST, color.getMetadata(),
+                    new ModelResourceLocation(ProjectEXItems.ADVANCED_ALCHEMICAL_CHEST.getRegistryName(), "inventory"));
+        }
+
+        ModelLoader.setCustomModelResourceLocation(ProjectEXItems.COMPACT_SUN, 0, new ModelResourceLocation(ProjectEXItems.COMPACT_SUN.getRegistryName(), "normal"));
+
 		if (ProjectEXConfig.items.link)
 		{
 			addModel(ProjectEXItems.ENERGY_LINK, "normal");
 			addModel(ProjectEXItems.PERSONAL_LINK, "normal");
 			addModel(ProjectEXItems.REFINED_LINK, "normal");
 			addModel(ProjectEXItems.COMPRESSED_REFINED_LINK, "normal");
+			addModel(ProjectEXItems.TRANSMUTATION_INTERFACE, "filter=true");
 		}
 
 		for (EnumTier tier : EnumTier.VALUES)
@@ -94,6 +115,9 @@ public class ProjectEXClientEventHandler
 			addModel(ProjectEXItems.COLOSSAL_STAR_SPHERE, "inventory");
 			addModel(ProjectEXItems.COLOSSAL_STAR_OMEGA, "inventory");
 		}
+
+		for (EnumFuel fuel : EnumFuel.VALUES)
+			ModelLoader.setCustomModelResourceLocation(ProjectEXItems.FUEL, fuel.ordinal(), new ModelResourceLocation(ProjectEX.MOD_ID + ":fuel/" + fuel.getName() + "#inventory"));
 
 		for (EnumMatter matter : EnumMatter.VALUES)
 		{

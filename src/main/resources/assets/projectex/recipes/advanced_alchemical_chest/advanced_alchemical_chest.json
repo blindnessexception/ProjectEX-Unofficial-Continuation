@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "group": "projectex:advanced_alchemical_chest",
+  "conditions": [
+    {
+      "type": "minecraft:item_exists",
+      "item": "projectex:advanced_alchemical_chest"
+    }
+  ],
+  "result": {"item": "advanced_alchemical_chest", "data": 0},
+  "pattern": [
+    "ALA",
+    "MBM",
+    "HLH"
+  ],
+  "key": {
+    "L": {"item": "projecte:item.pe_covalence_dust", "data": 0},
+    "M": {"item": "projecte:item.pe_covalence_dust", "data": 1},
+    "H": {"item": "projecte:item.pe_covalence_dust", "data": 2},
+    "A": {"item": "projecte:item.pe_matter", "data": 0},
+    "B": {"item": "projecte:item.pe_alchemical_bag", "data": 0}
+  }
+}

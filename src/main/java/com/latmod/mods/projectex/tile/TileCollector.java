@@ -1,5 +1,6 @@
 package com.latmod.mods.projectex.tile;
 
+import com.latmod.mods.projectex.block.BlockCompactSun;
 import com.latmod.mods.projectex.block.EnumTier;
 import moze_intel.projecte.api.tile.IEmcAcceptor;
 import moze_intel.projecte.gameObjs.tiles.RelayMK1Tile;
@@ -67,7 +68,7 @@ public class TileCollector extends TileEntity implements ITickable
 
 		if (tempSize > 0)
 		{
-			long s = (long) (EnumTier.byMeta(getBlockMetadata()).properties.collector_output / tempSize);
+			long s = (long) (EnumTier.byMeta(getBlockMetadata()).properties.collector_output / tempSize) * getSunBonus();
 
 			for (int i = 0; i < 6; i++)
 			{
@@ -85,4 +86,13 @@ public class TileCollector extends TileEntity implements ITickable
 	public void markDirty()
 	{
 	}
+
+    public boolean hasSunBonus() {
+        return BlockCompactSun.adjacent(this.world, this.pos, EnumFacing.UP);
+    }
+
+    public long getSunBonus() {
+        if (!hasSunBonus()) return 1L;
+        return 10L;
+    }
 }

@@ -13,6 +13,7 @@ import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.ItemStackHandler;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
@@ -191,7 +192,7 @@ public class OfflineKnowledgeProvider implements IKnowledgeProvider
 	public NBTTagCompound serializeNBT()
 	{
 		NBTTagCompound nbt = new NBTTagCompound();
-		nbt.setDouble("transmutationEmc", emc);
+        nbt.setDouble("transmutationEmc", emc);
 		NBTTagList knowledgeWrite = new NBTTagList();
 
 		for (ItemStack is : knowledge)
@@ -208,8 +209,8 @@ public class OfflineKnowledgeProvider implements IKnowledgeProvider
 	@Override
 	public void deserializeNBT(NBTTagCompound nbt)
 	{
-		double emc1 = nbt.getDouble("transmutationEmc");
-		emc = emc1 > Long.MAX_VALUE ? Long.MAX_VALUE : (long) emc1;
+		double emc1 = nbt.getDouble("transmutationEmcBig");
+        emc = emc1 > Long.MAX_VALUE ? Long.MAX_VALUE : (long) emc1;
 
 		NBTTagList list = nbt.getTagList("knowledge", 10);
 

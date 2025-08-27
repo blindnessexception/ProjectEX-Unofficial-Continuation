@@ -1,10 +1,12 @@
 package com.latmod.mods.projectex.tile;
 
+import com.latmod.mods.projectex.block.BlockCompactSun;
 import com.latmod.mods.projectex.block.EnumTier;
 import com.latmod.mods.projectex.integration.PersonalEMC;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 
 import java.util.UUID;
@@ -61,7 +63,7 @@ public class TilePowerFlower extends TileEntity implements ITickable
 			return;
 		}
 
-		storedEMC += EnumTier.byMeta(getBlockMetadata()).properties.powerFlowerOutput();
+		storedEMC += (long) (EnumTier.byMeta(getBlockMetadata()).properties.powerFlowerOutput() * getSunBonus());
 
 		EntityPlayerMP player = world.getMinecraftServer().getPlayerList().getPlayerByUUID(owner);
 
@@ -75,4 +77,13 @@ public class TilePowerFlower extends TileEntity implements ITickable
 			world.markChunkDirty(pos, this);
 		}
 	}
+
+    public boolean hasSunBonus() {
+        return BlockCompactSun.adjacent(this.world, this.pos, EnumFacing.DOWN);
+    }
+
+    public long getSunBonus() {
+        if (!hasSunBonus()) return 1L;
+        return 10L;
+    }
 }

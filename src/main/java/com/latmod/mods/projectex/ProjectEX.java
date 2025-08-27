@@ -1,38 +1,31 @@
 package com.latmod.mods.projectex;
 
-import com.latmod.mods.projectex.gui.EMCFormat;
 import com.latmod.mods.projectex.gui.ProjectEXGuiHandler;
 import com.latmod.mods.projectex.item.ProjectEXItems;
 import com.latmod.mods.projectex.net.ProjectEXNetHandler;
+import com.latmod.mods.projectex.proxy.IProxy;
 import com.latmod.mods.projectex.tile.AlchemyTableRecipes;
 import com.latmod.mods.projectex.tile.TilePowerFlower;
 import moze_intel.projecte.PECore;
-import moze_intel.projecte.utils.Constants;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLInterModComms;
+import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
-import net.minecraftforge.fml.relauncher.Side;
-
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
 
 @Mod(
 		modid = ProjectEX.MOD_ID,
 		name = ProjectEX.MOD_NAME,
-		version = ProjectEX.VERSION,
 		dependencies = "required-after:" + PECore.MODID
 )
 public class ProjectEX
 {
 	public static final String MOD_ID = "projectex";
-	public static final String MOD_NAME = "Project EX";
-	public static final String VERSION = "0.0.0.projectex";
+	public static final String MOD_NAME = "ProjectEX";
 
 	public static final CreativeTabs TAB = new CreativeTabs(MOD_ID)
 	{
@@ -46,12 +39,13 @@ public class ProjectEX
 	@Mod.Instance(MOD_ID)
 	public static ProjectEX INSTANCE;
 
-	@SidedProxy(serverSide = "com.latmod.mods.projectex.ProjectEXCommon", clientSide = "com.latmod.mods.projectex.client.ProjectEXClient")
-	public static ProjectEXCommon PROXY;
+	@SidedProxy(serverSide = "com.latmod.mods.projectex.proxy.ServerProxy", clientSide = "com.latmod.mods.projectex.proxy.ClientProxy")
+	public static IProxy PROXY;
 
 	@Mod.EventHandler
 	public void onPreInit(FMLPreInitializationEvent event)
 	{
+        PROXY.onPreInit(event);
 		ProjectEXNetHandler.init();
 		NetworkRegistry.INSTANCE.registerGuiHandler(this, new ProjectEXGuiHandler());
 	}
@@ -59,24 +53,7 @@ public class ProjectEX
 	@Mod.EventHandler
 	public void onInit(FMLInitializationEvent event)
 	{
-		if (FMLCommonHandler.instance().getSide() == Side.CLIENT)
-		{
-			try
-			{
-				Field field = Constants.class.getDeclaredField("EMC_FORMATTER");
-				field.setAccessible(true);
-				Field modifiersField = Field.class.getDeclaredField("modifiers");
-				modifiersField.setAccessible(true);
-				modifiersField.setInt(field, field.getModifiers() & ~Modifier.FINAL);
-				field.set(null, EMCFormat.INSTANCE);
-			}
-			catch (Exception ex)
-			{
-				ex.printStackTrace();
-			}
-
-			ProjectEXKeyBindings.init();
-		}
+        PROXY.onInit(event);
 
 		if (ProjectEXConfig.general.blacklist_power_flower_from_watch)
 		{
@@ -85,4 +62,9 @@ public class ProjectEX
 
 		AlchemyTableRecipes.INSTANCE.addDefaultRecipes();
 	}
+
+    @Mod.EventHandler
+    public void onPostInit(FMLPostInitializationEvent event) {
+        PROXY.onPostInit(event);
+    }
 }

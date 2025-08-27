@@ -1,0 +1,9 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "group": "projectex:advanced_alchemical_chest",
+  "result": {"item": "advanced_alchemical_chest", "data": 0},
+  "ingredients": [
+    {"item": "projectex:advanced_alchemical_chest"},
+    {"type": "forge:ore_dict", "ore": "dyeWhite"}
+  ]
+}

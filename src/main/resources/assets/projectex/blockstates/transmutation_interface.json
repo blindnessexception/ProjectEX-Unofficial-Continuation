@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "filter=true": {
+      "model": "projectex:transmutation_interface"
+    },
+    "filter=false": {
+      "model": "projectex:transmutation_interface_nofilter"
+    }
+  }
+}

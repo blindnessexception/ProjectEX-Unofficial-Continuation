@@ -1,53 +1,36 @@
 package com.latmod.mods.projectex;
 
-import com.latmod.mods.projectex.block.BlockAlchemyTable;
-import com.latmod.mods.projectex.block.BlockCollector;
-import com.latmod.mods.projectex.block.BlockEnergyLink;
-import com.latmod.mods.projectex.block.BlockLinkMK1;
-import com.latmod.mods.projectex.block.BlockLinkMK2;
-import com.latmod.mods.projectex.block.BlockLinkMK3;
-import com.latmod.mods.projectex.block.BlockPowerFlower;
-import com.latmod.mods.projectex.block.BlockRelay;
-import com.latmod.mods.projectex.block.BlockStoneTable;
-import com.latmod.mods.projectex.block.EnumMatter;
-import com.latmod.mods.projectex.block.EnumTier;
-import com.latmod.mods.projectex.block.ProjectEXBlocks;
-import com.latmod.mods.projectex.item.ItemArcaneTablet;
-import com.latmod.mods.projectex.item.ItemBlockTier;
-import com.latmod.mods.projectex.item.ItemColossalStar;
-import com.latmod.mods.projectex.item.ItemCompressedCollector;
-import com.latmod.mods.projectex.item.ItemFinalStar;
-import com.latmod.mods.projectex.item.ItemKnowledgeSharingBook;
-import com.latmod.mods.projectex.item.ItemMagnumStar;
-import com.latmod.mods.projectex.item.ItemMatter;
-import com.latmod.mods.projectex.item.ProjectEXItems;
-import com.latmod.mods.projectex.tile.TileAlchemyTable;
-import com.latmod.mods.projectex.tile.TileCollector;
-import com.latmod.mods.projectex.tile.TileEnergyLink;
-import com.latmod.mods.projectex.tile.TileLinkMK1;
-import com.latmod.mods.projectex.tile.TileLinkMK2;
-import com.latmod.mods.projectex.tile.TileLinkMK3;
-import com.latmod.mods.projectex.tile.TilePowerFlower;
-import com.latmod.mods.projectex.tile.TileRelay;
+import com.latmod.mods.projectex.block.*;
+import com.latmod.mods.projectex.client.rendering.ChestRenderer;
+import com.latmod.mods.projectex.item.*;
+import com.latmod.mods.projectex.tile.*;
 import moze_intel.projecte.api.item.IItemEmc;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.items.KleinStar;
 import net.minecraft.block.Block;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemBlock;
-import net.minecraft.item.ItemStack;
+import net.minecraft.init.Blocks;
+import net.minecraft.init.Items;
+import net.minecraft.item.*;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.item.crafting.ShapedRecipes;
 import net.minecraft.item.crafting.ShapelessRecipes;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.translation.I18n;
+import net.minecraftforge.common.IRarity;
 import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 import net.minecraftforge.fml.common.registry.GameRegistry;
+import net.minecraftforge.oredict.OreDictionary;
+import net.minecraftforge.oredict.OreIngredient;
 import net.minecraftforge.registries.IForgeRegistry;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author LatvianModder
@@ -55,7 +38,7 @@ import net.minecraftforge.registries.IForgeRegistry;
 @Mod.EventBusSubscriber(modid = ProjectEX.MOD_ID)
 public class ProjectEXEventHandler
 {
-	private static Block withName(Block item, String name)
+    private static Block withName(Block item, String name)
 	{
 		item.setCreativeTab(ProjectEX.TAB);
 		item.setRegistryName(name);
@@ -76,16 +59,23 @@ public class ProjectEXEventHandler
 	{
 		IForgeRegistry<Block> r = event.getRegistry();
 
+        r.register(withName(new BlockAdvancedAlchemicalChest(), "advanced_alchemical_chest"));
+        GameRegistry.registerTileEntity(TileAdvancedAlchemicalChest.class, new ResourceLocation(ProjectEX.MOD_ID, "advanced_alchemical_chest"));
+
+        r.register(withName(new BlockCompactSun(), "compact_sun"));
+
 		if (ProjectEXConfig.items.link)
 		{
 			r.register(withName(new BlockEnergyLink(), "energy_link"));
 			r.register(withName(new BlockLinkMK1(), "personal_link"));
 			r.register(withName(new BlockLinkMK2(), "refined_link"));
 			r.register(withName(new BlockLinkMK3(), "compressed_refined_link"));
+			r.register(withName(new BlockTransmutationInterface(), "transmutation_interface"));
 			GameRegistry.registerTileEntity(TileEnergyLink.class, new ResourceLocation(ProjectEX.MOD_ID, "energy_link"));
 			GameRegistry.registerTileEntity(TileLinkMK1.class, new ResourceLocation(ProjectEX.MOD_ID, "personal_link"));
 			GameRegistry.registerTileEntity(TileLinkMK2.class, new ResourceLocation(ProjectEX.MOD_ID, "refined_link"));
 			GameRegistry.registerTileEntity(TileLinkMK3.class, new ResourceLocation(ProjectEX.MOD_ID, "compressed_refined_link"));
+			GameRegistry.registerTileEntity(TileTransmutationInterface.class, new ResourceLocation(ProjectEX.MOD_ID, "transmutation_interface"));
 		}
 
 		if (ProjectEXConfig.items.collectors)
@@ -116,6 +106,8 @@ public class ProjectEXEventHandler
 			r.register(withName(new BlockAlchemyTable(), "alchemy_table"));
 			GameRegistry.registerTileEntity(TileAlchemyTable.class, new ResourceLocation(ProjectEX.MOD_ID, "alchemy_table"));
 		}
+
+
 	}
 
 	@SubscribeEvent
@@ -123,12 +115,31 @@ public class ProjectEXEventHandler
 	{
 		IForgeRegistry<Item> r = event.getRegistry();
 
+        ItemBlock advanced_alchemical_chest = new ItemBlock(ProjectEXBlocks.ADVANCED_ALCHEMICAL_CHEST) {
+            @Override
+            public String getItemStackDisplayName(ItemStack stack) {
+                EnumDyeColor color = EnumDyeColor.byMetadata(stack.getMetadata());
+                return super.getItemStackDisplayName(stack) + " (" + I18n.translateToLocal("item.fireworksCharge." +
+                        (!color.equals(EnumDyeColor.LIGHT_BLUE) ? color.getName() : "lightBlue")) + ")";
+            }
+        };
+        r.register(advanced_alchemical_chest.setRegistryName("advanced_alchemical_chest"));
+
+        ItemBlock compact_sun = new ItemBlock(ProjectEXBlocks.COMPACT_SUN) {
+            @Override
+            public IRarity getForgeRarity(ItemStack stack) {
+                return EnumRarity.EPIC;
+            }
+        };
+        r.register(compact_sun.setRegistryName("compact_sun"));
+
 		if (ProjectEXConfig.items.link)
 		{
 			r.register(new ItemBlock(ProjectEXBlocks.ENERGY_LINK).setRegistryName("energy_link"));
 			r.register(new ItemBlock(ProjectEXBlocks.PERSONAL_LINK).setRegistryName("personal_link"));
 			r.register(new ItemBlock(ProjectEXBlocks.REFINED_LINK).setRegistryName("refined_link"));
 			r.register(new ItemBlock(ProjectEXBlocks.COMPRESSED_REFINED_LINK).setRegistryName("compressed_refined_link"));
+			r.register(new ItemBlock(ProjectEXBlocks.TRANSMUTATION_INTERFACE).setRegistryName("transmutation_interface"));
 		}
 
 		if (ProjectEXConfig.items.collectors)
@@ -173,6 +184,7 @@ public class ProjectEXEventHandler
 			r.register(withName(new ItemColossalStar(KleinStar.EnumKleinTier.OMEGA), "colossal_star_omega"));
 		}
 
+		r.register(withName(new ItemFuel(), "fuel"));
 		r.register(withName(new ItemMatter(), "matter"));
 
 		if (ProjectEXConfig.items.clay_matter)
@@ -223,14 +235,51 @@ public class ProjectEXEventHandler
 		IForgeRegistry<IRecipe> r = event.getRegistry();
 
 		EnumMatter prevMatter = null;
+		EnumTier prevTier = null;
+		EnumFuel prevFuel = null;
+        EnumDyeColor prevBag = null;
 
-		Ingredient afuel = Ingredient.fromStacks(new ItemStack(ObjHandler.fuels, 1, 2));
+		Ingredient stone = Ingredient.fromStacks(new ItemStack(ObjHandler.philosStone)),
+				glow = Ingredient.fromStacks(new ItemStack(Blocks.GLOWSTONE)),
+                chest = Ingredient.fromItem(ProjectEXItems.ADVANCED_ALCHEMICAL_CHEST),
+                dmatter = Ingredient.fromStacks(new ItemStack(ObjHandler.matter, 1, 0)),
+                low = Ingredient.fromStacks(new ItemStack(ObjHandler.covalence, 1, 0)),
+                medium = Ingredient.fromStacks(new ItemStack(ObjHandler.covalence, 1, 1)),
+                high = Ingredient.fromStacks(new ItemStack(ObjHandler.covalence, 1, 2));
+
+        for (EnumDyeColor bag : EnumDyeColor.values()) {
+            if (prevBag != null) {
+                Ingredient bagIng = Ingredient.fromStacks(new ItemStack(ObjHandler.alchBag, 1, bag.ordinal())),
+                        dye = OreIngredient.fromStacks(new ItemStack(Items.DYE, 1, bag.getDyeDamage()));
+
+                NonNullList<Ingredient> list1 = NonNullList.create();
+                list1.add(chest);
+                list1.add(dye);
+                r.register(new ShapelessRecipes("projectex:advanced_alchemical_chest", new ItemStack(ProjectEXItems.ADVANCED_ALCHEMICAL_CHEST, 1, bag.ordinal()), list1).setRegistryName("advanced_alchemical_chest/recolor_" + bag.getName()));
+
+                NonNullList<Ingredient> list2 = NonNullList.create();
+                list2.add(dmatter);
+                list2.add(low);
+                list2.add(dmatter);
+                list2.add(medium);
+                list2.add(bagIng);
+                list2.add(medium);
+                list2.add(high);
+                list2.add(low);
+                list2.add(high);
+                r.register(new ShapedRecipes("projectex:advanced_alchemical_chest", 3, 3, list2, new ItemStack(ProjectEXItems.ADVANCED_ALCHEMICAL_CHEST, 1, bag.ordinal())).setRegistryName("advanced_alchemical_chest/" + bag.getName()));
+            }
+
+            prevBag = bag;
+        }
 
 		for (EnumMatter matter : EnumMatter.VALUES)
 		{
 			if (prevMatter != null)
 			{
-				Ingredient prevMatterIngredient = Ingredient.fromStacks(prevMatter.get());
+				Ingredient prevMatterIngredient = Ingredient.fromStacks(prevMatter.get()),
+						afuel = Ingredient.fromStacks(new ItemStack(ProjectEXItems.FUEL, 1, prevMatter.ordinal()));
+
 
 				NonNullList<Ingredient> listh = NonNullList.create();
 				listh.add(afuel);
@@ -260,7 +309,7 @@ public class ProjectEXEventHandler
 			prevMatter = matter;
 		}
 
-		EnumTier prevTier = null;
+
 
 		for (EnumTier tier : EnumTier.VALUES)
 		{
@@ -306,6 +355,34 @@ public class ProjectEXEventHandler
 			}
 
 			prevTier = tier;
+		}
+
+		for (EnumFuel fuel : EnumFuel.VALUES) {
+			if (prevFuel != null) {
+				Ingredient preFuelIngredient = Ingredient.fromStacks(prevFuel.get()),
+						fuelIngredient = Ingredient.fromStacks(fuel.get());
+
+				NonNullList<Ingredient> list = NonNullList.create();
+				list.add(stone);
+				list.add(preFuelIngredient);
+				list.add(preFuelIngredient);
+				list.add(preFuelIngredient);
+				list.add(preFuelIngredient);
+				r.register(new ShapelessRecipes("projectex:fuel", fuel.get(), list)
+						.setRegistryName("fuel/" + prevFuel.getName() + "_to_" + fuel.getName())
+				);
+
+				list = NonNullList.create();
+				list.add(stone);
+				list.add(fuelIngredient);
+				ItemStack res = prevFuel.get().copy();
+				res.setCount(4);
+				r.register(new ShapelessRecipes("projectex:fuel", res, list)
+						.setRegistryName("fuel/" + fuel.getName() + "_to_" + prevFuel.getName())
+				);
+			}
+			OreDictionary.registerOre("collectorFuels", fuel.get());
+			prevFuel = fuel;
 		}
 	}
 }

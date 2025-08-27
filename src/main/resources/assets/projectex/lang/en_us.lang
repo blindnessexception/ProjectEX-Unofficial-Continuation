@@ -9,6 +9,12 @@ tile.projectex.refined_link.tooltip=Same as Personal EMC Link, but has 1 input s
 tile.projectex.compressed_refined_link.name=Compressed Refined EMC Link
 tile.projectex.compressed_refined_link.tooltip=Same as Refined EMC Link, but has 54 output slots.
 
+tile.projectex.transmutation_interface.name=Transmutation Interface
+tile.projectex.transmutation_interface.tooltip=Full knowledge!
+
+tile.projectex.advanced_alchemical_chest.name=Advanced Alchemical Chest
+tile.projectex.compact_sun.name=Compact Sun
+
 tile.projectex.collector.basic.name=Basic Collector [MK1]
 tile.projectex.collector.dark.name=Dark Matter Collector [MK2]
 tile.projectex.collector.red.name=Red Matter Collector [MK3]
@@ -86,6 +92,17 @@ item.projectex.colossal_star_drei.name=Colossal Star Drei
 item.projectex.colossal_star_vier.name=Colossal Star Vier
 item.projectex.colossal_star_sphere.name=Colossal Star Sphere
 item.projectex.colossal_star_omega.name=Colossal Star Omega
+item.projectex.fuel.magenta.name=Magenta Fuel
+item.projectex.fuel.pink.name=Pink Fuel
+item.projectex.fuel.purple.name=Purple Fuel
+item.projectex.fuel.violet.name=Violet Fuel
+item.projectex.fuel.blue.name=Blue Fuel
+item.projectex.fuel.cyan.name=Cyan Fuel
+item.projectex.fuel.green.name=Green Fuel
+item.projectex.fuel.lime.name=Lime Fuel
+item.projectex.fuel.yellow.name=Yellow Fuel
+item.projectex.fuel.orange.name=Orange Fuel
+item.projectex.fuel.white.name=White Fuel
 item.projectex.matter.magenta.name=Magenta Matter
 item.projectex.matter.pink.name=Pink Matter
 item.projectex.matter.purple.name=Purple Matter
