@@ -155,3 +155,5 @@ gui.stone_table.cant_use=Can't use this item in Stone Table!
 gui.arcane_tablet.rotate=Rotate
 gui.arcane_tablet.balance=Balance / Spread
 gui.arcane_tablet.clear=Clear
+
+tile.projectex.compact_sun.tooltip=The power of the sun in a single block.

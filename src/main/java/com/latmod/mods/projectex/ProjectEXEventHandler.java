@@ -1,15 +1,14 @@
 package com.latmod.mods.projectex;
 
 import com.latmod.mods.projectex.block.*;
-import com.latmod.mods.projectex.client.rendering.ChestRenderer;
 import com.latmod.mods.projectex.item.*;
 import com.latmod.mods.projectex.tile.*;
 import moze_intel.projecte.api.item.IItemEmc;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.items.KleinStar;
 import net.minecraft.block.Block;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.init.Blocks;
-import net.minecraft.init.Items;
 import net.minecraft.item.*;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.Ingredient;
@@ -17,10 +16,8 @@ import net.minecraft.item.crafting.ShapedRecipes;
 import net.minecraft.item.crafting.ShapelessRecipes;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.translation.I18n;
 import net.minecraftforge.common.IRarity;
 import net.minecraftforge.event.RegistryEvent;
-import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent;
@@ -28,9 +25,6 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.oredict.OreIngredient;
 import net.minecraftforge.registries.IForgeRegistry;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * @author LatvianModder
@@ -119,7 +113,7 @@ public class ProjectEXEventHandler
             @Override
             public String getItemStackDisplayName(ItemStack stack) {
                 EnumDyeColor color = EnumDyeColor.byMetadata(stack.getMetadata());
-                return super.getItemStackDisplayName(stack) + " (" + I18n.translateToLocal("item.fireworksCharge." +
+                return super.getItemStackDisplayName(stack) + " (" + I18n.format("item.fireworksCharge." +
                         (!color.equals(EnumDyeColor.LIGHT_BLUE) ? color.getName() : "lightBlue")) + ")";
             }
         };
@@ -238,7 +232,25 @@ public class ProjectEXEventHandler
 		EnumTier prevTier = null;
 		EnumFuel prevFuel = null;
         EnumDyeColor prevBag = null;
-
+        String[] dyes =
+                {
+                        "Black",
+                        "Red",
+                        "Green",
+                        "Brown",
+                        "Blue",
+                        "Purple",
+                        "Cyan",
+                        "LightGray",
+                        "Gray",
+                        "Pink",
+                        "Lime",
+                        "Yellow",
+                        "LightBlue",
+                        "Magenta",
+                        "Orange",
+                        "White"
+                };
 		Ingredient stone = Ingredient.fromStacks(new ItemStack(ObjHandler.philosStone)),
 				glow = Ingredient.fromStacks(new ItemStack(Blocks.GLOWSTONE)),
                 chest = Ingredient.fromItem(ProjectEXItems.ADVANCED_ALCHEMICAL_CHEST),
@@ -250,7 +262,7 @@ public class ProjectEXEventHandler
         for (EnumDyeColor bag : EnumDyeColor.values()) {
             if (prevBag != null) {
                 Ingredient bagIng = Ingredient.fromStacks(new ItemStack(ObjHandler.alchBag, 1, bag.ordinal())),
-                        dye = OreIngredient.fromStacks(new ItemStack(Items.DYE, 1, bag.getDyeDamage()));
+                        dye = new OreIngredient("dye" + dyes[bag.getDyeDamage()]);
 
                 NonNullList<Ingredient> list1 = NonNullList.create();
                 list1.add(chest);

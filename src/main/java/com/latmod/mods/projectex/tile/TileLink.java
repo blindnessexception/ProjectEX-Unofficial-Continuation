@@ -10,6 +10,7 @@ import moze_intel.projecte.api.tile.IEmcAcceptor;
 import moze_intel.projecte.config.ProjectEConfig;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -51,6 +52,11 @@ public class TileLink extends TileEntity implements IItemHandlerModifiable, ITic
 	{
 		return false;
 	}
+
+    private long getCachedEMC(ItemStack stack) {
+        Item item = stack.getItem();
+        return ProjectEAPI.getEMCProxy().getValue(item);
+    }
 
 	@Override
 	public void readFromNBT(NBTTagCompound nbt)
@@ -201,7 +207,7 @@ public class TileLink extends TileEntity implements IItemHandlerModifiable, ITic
 			return ItemStack.EMPTY;
 		}
 
-		long value = ProjectEAPI.getEMCProxy().getValue(outputSlots[index]);
+		long value = getCachedEMC(outputSlots[index]);
 
 		if (value > 0L)
 		{
@@ -301,7 +307,7 @@ public class TileLink extends TileEntity implements IItemHandlerModifiable, ITic
 			return ItemStack.EMPTY;
 		}
 
-		long value = ProjectEAPI.getEMCProxy().getValue(outputSlots[index]);
+		long value = getCachedEMC(outputSlots[index]);
 
 		if (value <= 0L)
 		{
@@ -373,18 +379,15 @@ public class TileLink extends TileEntity implements IItemHandlerModifiable, ITic
 
 			for (int i = 0; i < inputSlots.length; i++)
 			{
-				if (!inputSlots[i].isEmpty())
+                ItemStack in = inputSlots[i];
+				if (!in.isEmpty())
 				{
-					double value = ProjectEAPI.getEMCProxy().getValue(inputSlots[i]);
+					long value = getCachedEMC(in);
 
-					if (value > 0D)
+					if (value > 0)
 					{
-						if (knowledgeProvider != null && learnItems())
-						{
-							syncKnowledge = knowledgeProvider.addKnowledge(ProjectEXUtils.fixOutput(inputSlots[i]));
-						}
-
-						storedEMC += (double) inputSlots[i].getCount() * value * ProjectEConfig.difficulty.covalenceLoss;
+                        if (knowledgeProvider != null && learnItems()) syncKnowledge |= knowledgeProvider.addKnowledge(ProjectEXUtils.fixOutput(in));
+						storedEMC += (long) (in.getCount() * value * ProjectEConfig.difficulty.covalenceLoss);
 						inputSlots[i] = ItemStack.EMPTY;
 						markDirty();
 					}

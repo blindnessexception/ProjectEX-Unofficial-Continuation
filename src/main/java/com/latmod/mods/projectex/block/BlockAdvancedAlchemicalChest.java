@@ -43,11 +43,6 @@ public class BlockAdvancedAlchemicalChest extends BlockDirection {
     }
 
     @Override
-    public void addInformation(ItemStack stack, @Nullable World worldIn, List<String> tooltip, ITooltipFlag flagIn) {
-        super.addInformation(stack, worldIn, tooltip, flagIn);
-    }
-
-    @Override
     public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess world, BlockPos pos) {
         return AABB;
     }
@@ -132,11 +127,6 @@ public class BlockAdvancedAlchemicalChest extends BlockDirection {
         TileAdvancedAlchemicalChest tileAdvancedAlchemicalChest = (TileAdvancedAlchemicalChest) worldIn.getTileEntity(pos);
 
         return (tileAdvancedAlchemicalChest != null) ? MapColor.getBlockColor(tileAdvancedAlchemicalChest.getColor()) : MapColor.getBlockColor(EnumDyeColor.WHITE);
-    }
-
-    @Override
-    public void breakBlock(World world, BlockPos pos, IBlockState state) {
-        world.removeTileEntity(pos);
     }
 
     @Override
